@@ -15,7 +15,6 @@ const formItemLayout = {
   },
 };
 
-let a='github';
 function App() {
   const [componentVariant, setComponentVariant] =
     useState<FormProps["variant"]>("filled");
