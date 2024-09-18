@@ -1,4 +1,5 @@
 import { Content, Footer, Header } from "antd/es/layout/layout";
+import ItemProps from "./Model/item";
 import "./App.css";
 import "./index.css";
 import { useState } from "react";
@@ -26,8 +27,20 @@ function App() {
   }) => {
     setComponentVariant(variant);
   };
+
+  const handleSubmit: FormProps<ItemProps>["onFinish"] = (values) => {
+    // Retrieve the current list from local storage
+    const currentList = localStorage.getItem("items");
+    const items = currentList ? JSON.parse(currentList) : [];
+
+    // Append the new item to the list
+    items.push(values);
+
+    // Save the updated list back to local storage
+    localStorage.setItem("items", JSON.stringify(items));
+  };
+
   return (
-    
     <>
       <Header
         style={{
@@ -66,19 +79,18 @@ function App() {
             onValuesChange={onFormVariantChange}
             variant={componentVariant}
             style={{ maxWidth: 600 }}
-            
             initialValues={{ variant: componentVariant }}
+            onFinish={handleSubmit}
           >
-            <Form.Item
+            <Form.Item<ItemProps>
               label="Name"
               name="name"
-              value = {form.name}
               rules={[{ required: true, message: "Please enter your name!" }]}
             >
               <Input />
             </Form.Item>
 
-            <Form.Item
+            <Form.Item<ItemProps>
               label="Description"
               name="description"
               rules={[
@@ -91,7 +103,7 @@ function App() {
               <Input.TextArea />
             </Form.Item>
 
-            <Form.Item
+            <Form.Item<ItemProps>
               label="Date"
               name="formToDate"
               rules={[{ required: true, message: "Please choose!" }]}
@@ -100,7 +112,7 @@ function App() {
             </Form.Item>
 
             <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
-              <Button type="primary" htmlType="submit" onClick={handleSubmit()}>
+              <Button type="primary" htmlType="submit">
                 Submit
               </Button>
             </Form.Item>
