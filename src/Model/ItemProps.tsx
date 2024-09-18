@@ -3,8 +3,7 @@ interface ItemProps{
     name: string,
     description: string,
     status: "New" | "Inprogress" | "Complete",
-    startDate: Date,
-    endDate: Date
+    formToDate: [string, string]
 }
  
 export default ItemProps;

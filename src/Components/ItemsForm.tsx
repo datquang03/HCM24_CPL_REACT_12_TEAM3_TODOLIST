@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, DatePicker, Form, FormProps, Input } from "antd";
-import ItemProps from "../Model/item";
+import ItemProps from "../Model/ItemProps";
 
 const { RangePicker } = DatePicker;
 const formItemLayout = {
