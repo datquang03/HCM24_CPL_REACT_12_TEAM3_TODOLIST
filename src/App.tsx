@@ -1,123 +1,16 @@
 import { Content, Footer, Header } from "antd/es/layout/layout";
-import ItemProps from "./Model/item";
+import ItemsForm from "./Components/ItemsForm";
 import "./App.css";
 import "./index.css";
-import { useState } from "react";
-const { RangePicker } = DatePicker;
-import { Button, DatePicker, Form, FormProps, Input } from "antd";
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 6 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 14 },
-  },
-};
 
 function App() {
-  const [componentVariant, setComponentVariant] =
-    useState<FormProps["variant"]>("filled");
-
-  const onFormVariantChange = ({
-    variant,
-  }: {
-    variant: FormProps["variant"];
-  }) => {
-    setComponentVariant(variant);
-  };
-
-  const handleSubmit: FormProps<ItemProps>["onFinish"] = (values) => {
-    // Retrieve the current list from local storage
-    const currentList = localStorage.getItem("items");
-    const items = currentList ? JSON.parse(currentList) : [];
-
-    // Append the new item to the list
-    items.push(values);
-
-    // Save the updated list back to local storage
-    localStorage.setItem("items", JSON.stringify(items));
-  };
-
   return (
     <>
-      <Header
-        style={{
-          height: "100px",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          color: "white",
-          fontSize: "40px",
-          fontWeight: "700",
-        }}
-      >
+      <Header className="h-[100px] flex justify-center items-center text-white font-bold text-4xl">
         TO DO LIST
       </Header>
-      <Content
-        style={{
-          minHeight: "80vh",
-          display: "flex",
-          justifyContent: "space-between",
-          gap: "20px",
-          padding: "20px",
-        }}
-      >
-        <div className="input-form">
-          <h1
-            style={{
-              fontSize: "40px",
-              paddingBottom: "20px",
-              fontWeight: "700",
-            }}
-          >
-            To Do Form
-          </h1>
-          <Form
-            {...formItemLayout}
-            onValuesChange={onFormVariantChange}
-            variant={componentVariant}
-            style={{ maxWidth: 600 }}
-            initialValues={{ variant: componentVariant }}
-            onFinish={handleSubmit}
-          >
-            <Form.Item<ItemProps>
-              label="Name"
-              name="name"
-              rules={[{ required: true, message: "Please enter your name!" }]}
-            >
-              <Input />
-            </Form.Item>
-
-            <Form.Item<ItemProps>
-              label="Description"
-              name="description"
-              rules={[
-                {
-                  required: true,
-                  message: "Please type some in description field!",
-                },
-              ]}
-            >
-              <Input.TextArea />
-            </Form.Item>
-
-            <Form.Item<ItemProps>
-              label="Date"
-              name="formToDate"
-              rules={[{ required: true, message: "Please choose!" }]}
-            >
-              <RangePicker />
-            </Form.Item>
-
-            <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
-              <Button type="primary" htmlType="submit">
-                Submit
-              </Button>
-            </Form.Item>
-          </Form>
-        </div>
+      <Content className="min-h-[80vh] flex justify-between gap-5 p-5">
+        <ItemsForm />
         <div className="column new-task bg-green-400 ">
           <div className="title">New Task</div>
         </div>
