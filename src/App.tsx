@@ -25,7 +25,12 @@ function App() {
   }) => {
     setComponentVariant(variant);
   };
+  
+  const [name, nameState] = useState("");
+  const [description, descriptionState] = useState("");
+
   return (
+    
     <>
       <Header
         style={{
@@ -96,7 +101,7 @@ function App() {
             </Form.Item>
 
             <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" htmlType="submit" onClick={handleSubmit()}>
                 Submit
               </Button>
             </Form.Item>
