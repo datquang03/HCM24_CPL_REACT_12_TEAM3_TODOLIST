@@ -25,6 +25,12 @@ function App() {
   }) => {
     setComponentVariant(variant);
   };
+
+  const [form, formState] = useState({
+    name: "",
+    description: "",
+    formToDate: "",
+  });
   return (
     <>
       <Header
@@ -64,11 +70,13 @@ function App() {
             onValuesChange={onFormVariantChange}
             variant={componentVariant}
             style={{ maxWidth: 600 }}
+            
             initialValues={{ variant: componentVariant }}
           >
             <Form.Item
               label="Name"
               name="name"
+              value = {form.name}
               rules={[{ required: true, message: "Please enter your name!" }]}
             >
               <Input />

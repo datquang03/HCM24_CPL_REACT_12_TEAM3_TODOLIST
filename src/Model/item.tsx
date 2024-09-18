@@ -1,7 +1,7 @@
 interface ItemProps{
-    id: String,
-    name: String,
-    description: String,
+    id: string,
+    name: string,
+    description: string,
     status: "New" | "Inprogress" | "Complete",
     startDate: Date,
     endDate: Date
