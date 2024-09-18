@@ -1,0 +1,24 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.column {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+.title {
+  height: 50px;
+  width: 200px;
+  color: white;
+  background-color: rgb(47, 47, 206);
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
