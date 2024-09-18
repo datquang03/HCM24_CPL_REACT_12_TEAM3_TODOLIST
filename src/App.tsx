@@ -3,19 +3,7 @@ import "./App.css";
 import "./index.css";
 import { useState } from "react";
 const { RangePicker } = DatePicker;
-import {
-  Button,
-  Cascader,
-  DatePicker,
-  Form,
-  FormProps,
-  Input,
-  InputNumber,
-  Mentions,
-  Segmented,
-  Select,
-  TreeSelect,
-} from "antd";
+import { Button, DatePicker, Form, FormProps, Input } from "antd";
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
