@@ -98,9 +98,9 @@ const Card = ({ task, setDraggedTask }: CardProps) => {
           </div>
 
           <p className="text-black-500 text-sm">
-            <span className="font-medium">From:</span>
+            <span className="font-medium mr-1">From:</span>
             {formatDate(task.formToDate[0])}
-            <span className="ml-2 font-medium">To:</span>
+            <span className="ml-2 font-medium mr-1">To:</span>
             {formatDate(task.formToDate[1])}
           </p>
         </div>
@@ -111,29 +111,33 @@ const Card = ({ task, setDraggedTask }: CardProps) => {
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
           <div className="bg-black/30 backdrop-blur-md rounded-lg p-6 w-96 shadow-lg">
             <h2 className="text-2xl font-semibold mb-4">
-              <input
-                title="Task Name"
-                placeholder=""
-                type="text"
-                name="name"
-                value={editableTask.name}
-                className="w-full p-2"
-              />
+              <label className="text-lg text-white">
+                Task
+                <input
+                  title="Task Name"
+                  placeholder=""
+                  type="text"
+                  name="name"
+                  value={editableTask.name}
+                  className="text-black w-full p-2 rounded"
+                />
+              </label>
             </h2>
-            <textarea
-              title="Task Description"
-              placeholder=""
-              name="description"
-              value={editableTask.description}
-              className="w-full border border-gray-300 rounded p-2"
-            />
+            <label className="text-white">
+              Description
+              <textarea
+                title="Task Description"
+                placeholder=""
+                name="description"
+                value={editableTask.description}
+                className="w-full border border-gray-300 text-black rounded p-2"
+              />
+            </label>
 
             {/* Status Dropdown */}
-            <div className="relative">
-              <button
-                onClick={() => setStatusDropdownOpen(!statusDropdownOpen)}
-                className="w-full p-2 border border-gray-300 rounded-lg text-left"
-              >
+            <div className="relative py-2 text-white font-semibold">
+              Status
+              <span className="mx-2 w-full rounded-lg text-left">
                 <span
                   className={`px-2 py-1 rounded-full ${getStatusColor(
                     editableTask.status
@@ -141,44 +145,22 @@ const Card = ({ task, setDraggedTask }: CardProps) => {
                 >
                   {editableTask.status}
                 </span>
-              </button>
-              {statusDropdownOpen && (
-                <ul className="absolute w-full mt-2 bg-black/20 backdrop-blur-md rounded-lg">
-                  <li
-                    className="py-2 px-4 hover:bg-gray-100/30"
-                    onClick={() => handleChange("New")}
-                  >
-                    <span className="px-2 py-1 rounded-full bg-gray-400 text-white">
-                      New
-                    </span>
-                  </li>
-                  <li
-                    className="py-2 px-4 hover:bg-gray-100/30"
-                    onClick={() => handleChange("Inprogress")}
-                  >
-                    <span className="px-2 py-1 rounded-full bg-blue-500 text-white">
-                      In Progress
-                    </span>
-                  </li>
-                  <li
-                    className="py-2 px-4 hover:bg-gray-100/30"
-                    onClick={() => handleChange("Complete")}
-                  >
-                    <span className="px-2 py-1 rounded-full bg-green-500 text-white">
-                      Complete
-                    </span>
-                  </li>
-                </ul>
-              )}
+              </span>
+              <span>
+                {isOverdue && (
+                  <span className="text-red-500 text-sm font-bold bg-red-100 rounded-full px-2 py-1 shadow-md">
+                    Overdue
+                  </span>
+                )}
+              </span>
             </div>
 
             <p className="mt-2 text-white">
-              <span className="font-medium text-white">
-                From: {formatDate(editableTask.formToDate[0])}{" "}
+              <span className="font-medium text-white flex">
+                <span className="w-12">From:</span> {formatDate(editableTask.formToDate[0])}{" "}
               </span>
-              <br />
-              <span className="font-medium text-white">
-                To: {formatDate(editableTask.formToDate[1])}
+              <span className="font-medium text-white flex">
+                <span className="w-12">To:</span> {formatDate(editableTask.formToDate[1])}
               </span>
             </p>
 
