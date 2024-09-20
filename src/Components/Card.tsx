@@ -17,6 +17,7 @@ const Card = ({ task }: CardProps) => {
   const [showModal, setShowModal] = useState(false);
   const [editableTask, setEditableTask] = useState<ItemProps>(task);
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
+  const [isOverdue, setIsOverdue] = useState(false); // kiem tra thoi gian task
 
   // Open the modal and set the task as editableTask
   const openModal = () => {
@@ -37,6 +38,25 @@ const Card = ({ task }: CardProps) => {
     }));
   };
 
+  // Kiem tra task da qua han
+  const checkOverdue = () => {
+    const currentDate = new Date(); // Current date
+    const taskEndDate = new Date(editableTask.formToDate[1]); // Task's "To" date
+
+    // Compare current date with task end date
+    if (currentDate > taskEndDate && editableTask.status !== "Complete") {
+      setIsOverdue(true);
+    } else {
+      setIsOverdue(false);
+    }
+  };
+
+  // Function format dd/mm/yy
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-GB"); // Format as dd/mm/yy
+  };
+
   // Auto-save task to localStorage whenever the task changes
   useEffect(() => {
     const currentList = JSON.parse(localStorage.getItem("todo") || "[]");
@@ -44,6 +64,9 @@ const Card = ({ task }: CardProps) => {
       item.id === editableTask.id ? editableTask : item
     );
     localStorage.setItem("todo", JSON.stringify(updatedList));
+
+    // Check for overdue whenever the task changes
+    checkOverdue();
   }, [editableTask]);
 
   return (
@@ -51,15 +74,34 @@ const Card = ({ task }: CardProps) => {
       {/* The Card */}
       <div className="text-black">
         <div
-          className="cursor-pointer mx-4 mb-4 p-5 bg-white/30 backdrop-blur-md rounded-lg shadow-lg border-l-4"
+          className={`cursor-pointer mx-4 mb-4 p-5 bg-white/30 backdrop-blur-md rounded-lg shadow-lg border-l-4 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl ${
+            isOverdue ? "border-red-500 " : "border-gray-300"
+          }`}
           onClick={openModal}
         >
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">
-            {task.name}
-          </h3>
-          <p className="text-gray-500 text-sm">
-            <span className="font-medium">From:</span> {task.formToDate[0]}
-            <span className="ml-2 font-medium">To:</span> {task.formToDate[1]}
+          <div className="flex justify-between items-center">
+            {/* Task name with conditional strike-through if overdue */}
+            <h3
+              className={`text-xl font-semibold mb-2 ${
+                isOverdue ? "text-red-500 line-through italic" : "text-gray-800"
+              }`}
+            >
+              {task.name}
+            </h3>
+
+            {/* Overdue label */}
+            {isOverdue && (
+              <p className="text-red-500 text-sm font-bold bg-red-100 rounded-full px-2 py-1 shadow-md">
+                Overdue
+              </p>
+            )}
+          </div>
+
+          <p className="text-black-500 text-sm">
+            <span className="font-medium">From:</span>
+            {formatDate(task.formToDate[0])}
+            <span className="ml-2 font-medium">To:</span>
+            {formatDate(task.formToDate[1])}
           </p>
         </div>
       </div>
@@ -69,14 +111,14 @@ const Card = ({ task }: CardProps) => {
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
           <div className="bg-black/30 backdrop-blur-md rounded-lg p-6 w-96 shadow-lg">
             <h2 className="text-2xl font-semibold mb-4">
-                <input
-                  type="text"
-                  name="name"
-                  title="Task Name"
-                  placeholder=""
-                  value={editableTask.name}
-                  className="w-full p-2"
-                />
+              <input
+                type="text"
+                name="name"
+                title="Task Name"
+                placeholder=""
+                value={editableTask.name}
+                className="w-full p-2"
+              />
             </h2>
             <textarea
               title="Task Description"
@@ -132,11 +174,11 @@ const Card = ({ task }: CardProps) => {
 
             <p className="mt-2 text-white">
               <span className="font-medium text-white">
-                From: {editableTask.formToDate[0]}{" "}
+                From: {formatDate(editableTask.formToDate[0])}{" "}
               </span>
               <br />
               <span className="font-medium text-white">
-                To: {editableTask.formToDate[1]}
+                To: {formatDate(editableTask.formToDate[1])}
               </span>
             </p>
 
