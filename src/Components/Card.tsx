@@ -3,17 +3,10 @@ import ItemProps from "../Model/ItemProps";
 
 interface CardProps {
   task: ItemProps; // Accept a single task
+  setDraggedTask: (task: ItemProps | null) => void; // Callback for setting dragged task
 }
 
-const Card = ({ task }: CardProps) => {
-  // const [items, setItems] = useState<ItemProps[]>([]);
-  // useEffect(() => {
-  //     const currentList = localStorage.getItem("todo");
-  //     const todo = currentList ? JSON.parse(currentList) : dataForm; // Use dataForm as fallback
-  //     setItems(todo);
-  //     console.log(todo);
-  // }, []);
-
+const Card = ({ task, setDraggedTask }: CardProps) => {
   const [showModal, setShowModal] = useState(false);
   const [editableTask, setEditableTask] = useState<ItemProps>(task);
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
@@ -28,6 +21,11 @@ const Card = ({ task }: CardProps) => {
   // Close the modal
   const closeModal = () => {
     setShowModal(false);
+  };
+
+  // Handle drag start
+  const handleDragStart = () => {
+    setDraggedTask(task); // Set the dragged task
   };
 
   // Handle input changes and update the task in state
@@ -78,6 +76,8 @@ const Card = ({ task }: CardProps) => {
             isOverdue ? "border-red-500 " : "border-gray-300"
           }`}
           onClick={openModal}
+          draggable={true} // Make the card draggable
+          onDragStart={handleDragStart} // Handle drag start
         >
           <div className="flex justify-between items-center">
             {/* Task name with conditional strike-through if overdue */}
@@ -112,10 +112,10 @@ const Card = ({ task }: CardProps) => {
           <div className="bg-black/30 backdrop-blur-md rounded-lg p-6 w-96 shadow-lg">
             <h2 className="text-2xl font-semibold mb-4">
               <input
-                type="text"
-                name="name"
                 title="Task Name"
                 placeholder=""
+                type="text"
+                name="name"
                 value={editableTask.name}
                 className="w-full p-2"
               />
