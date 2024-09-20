@@ -3,17 +3,10 @@ import ItemProps from "../Model/ItemProps";
 
 interface CardProps {
   task: ItemProps; // Accept a single task
+  setDraggedTask: (task: ItemProps | null) => void; // Callback for setting dragged task
 }
 
-const Card = ({ task }: CardProps) => {
-  // const [items, setItems] = useState<ItemProps[]>([]);
-  // useEffect(() => {
-  //     const currentList = localStorage.getItem("todo");
-  //     const todo = currentList ? JSON.parse(currentList) : dataForm; // Use dataForm as fallback
-  //     setItems(todo);
-  //     console.log(todo);
-  // }, []);
-
+const Card = ({ task, setDraggedTask }: CardProps) => {
   const [showModal, setShowModal] = useState(false);
   const [editableTask, setEditableTask] = useState<ItemProps>(task);
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
@@ -29,6 +22,11 @@ const Card = ({ task }: CardProps) => {
     setShowModal(false);
   };
 
+  // Handle drag start
+  const handleDragStart = () => {
+    setDraggedTask(task); // Set the dragged task
+  };
+
   // Handle input changes and update the task in state
   const handleChange = (status: string) => {
     setEditableTask((prev) => ({
@@ -39,11 +37,11 @@ const Card = ({ task }: CardProps) => {
 
   // Auto-save task to localStorage whenever the task changes
   useEffect(() => {
-    const currentList = JSON.parse(localStorage.getItem("todo") || "[]");
+    const currentList = JSON.parse(localStorage.getItem("items") || "[]");
     const updatedList = currentList.map((item: ItemProps) =>
       item.id === editableTask.id ? editableTask : item
     );
-    localStorage.setItem("todo", JSON.stringify(updatedList));
+    localStorage.setItem("items", JSON.stringify(updatedList));
   }, [editableTask]);
 
   return (
@@ -53,10 +51,10 @@ const Card = ({ task }: CardProps) => {
         <div
           className="cursor-pointer mx-4 mb-4 p-5 bg-white/30 backdrop-blur-md rounded-lg shadow-lg border-l-4"
           onClick={openModal}
+          draggable={true} // Make the card draggable
+          onDragStart={handleDragStart} // Handle drag start
         >
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">
-            {task.name}
-          </h3>
+          <h3 className="text-xl font-semibold text-gray-800 mb-2">{task.name}</h3>
           <p className="text-gray-500 text-sm">
             <span className="font-medium">From:</span> {task.formToDate[0]}
             <span className="ml-2 font-medium">To:</span> {task.formToDate[1]}
@@ -69,18 +67,14 @@ const Card = ({ task }: CardProps) => {
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
           <div className="bg-black/30 backdrop-blur-md rounded-lg p-6 w-96 shadow-lg">
             <h2 className="text-2xl font-semibold mb-4">
-                <input
-                  type="text"
-                  name="name"
-                  title="Task Name"
-                  placeholder=""
-                  value={editableTask.name}
-                  className="w-full p-2"
-                />
+              <input
+                type="text"
+                name="name"
+                value={editableTask.name}
+                className="w-full p-2"
+              />
             </h2>
             <textarea
-              title="Task Description"
-              placeholder=""
               name="description"
               value={editableTask.description}
               className="w-full border border-gray-300 rounded p-2"
@@ -92,11 +86,7 @@ const Card = ({ task }: CardProps) => {
                 onClick={() => setStatusDropdownOpen(!statusDropdownOpen)}
                 className="w-full p-2 border border-gray-300 rounded-lg text-left"
               >
-                <span
-                  className={`px-2 py-1 rounded-full ${getStatusColor(
-                    editableTask.status
-                  )}`}
-                >
+                <span className={`px-2 py-1 rounded-full ${getStatusColor(editableTask.status)}`}>
                   {editableTask.status}
                 </span>
               </button>
@@ -131,13 +121,9 @@ const Card = ({ task }: CardProps) => {
             </div>
 
             <p className="mt-2 text-white">
-              <span className="font-medium text-white">
-                From: {editableTask.formToDate[0]}{" "}
-              </span>
+              <span className="font-medium text-white">From: {editableTask.formToDate[0]}</span>
               <br />
-              <span className="font-medium text-white">
-                To: {editableTask.formToDate[1]}
-              </span>
+              <span className="font-medium text-white">To: {editableTask.formToDate[1]}</span>
             </p>
 
             {/* Close button */}
