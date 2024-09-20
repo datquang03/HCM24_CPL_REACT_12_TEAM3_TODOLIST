@@ -3,7 +3,6 @@ import "./App.css";
 import "./index.css";
 import TaskBox from "./Components/TaskBox";
 import { useEffect, useState } from "react";
-// import { dataForm } from "./data/todoTest";
 import FilterTodo from "./Components/FilterTodo";
 import Card from "./Components/Card";
 import ItemProps from "./Model/ItemProps";
@@ -33,6 +32,8 @@ function App() {
   useEffect(() => {
     updateItemsFromLocalStorage();
   }, []);
+
+  console.log(items)
 
   const handleTaskDrop = (newStatus: "New" | "Inprogress" | "Complete") => {
   if (!draggedTask) {

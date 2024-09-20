@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
 import SearchInput from "./SearchInput";
 import SelectTime from "./SelectTime";
-import ItemProps from "../Model/ItemProps";
-import handleFilter from "../data/filterTodo";
+
 
 
 type FilterProps = {
@@ -14,7 +12,6 @@ type FilterProps = {
 }
 
 const FilterTodo = ({todoName, todoTime,setTodoName,setTodoTime,onFilter}:FilterProps) => {
-
   return (
     <div className="flex justify-end">
       <div className="flex-1 p-6 bg-white shadow-md rounded-lg">

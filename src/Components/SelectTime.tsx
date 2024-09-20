@@ -10,7 +10,6 @@ interface TodoTimeProps {
 
 const SelectTime: React.FC<TodoTimeProps> = ({ setTodoTime }) => {
   const handleDateChange: RangePickerProps['onChange'] = (dates, dateStrings) => {
-    // dates: moment objects, dateStrings: formatted date strings as an array
     console.log('Selected Dates:', dates);
     console.log('Formatted Dates:', dateStrings);
     setTodoTime([dateStrings[0], dateStrings[1]]);
