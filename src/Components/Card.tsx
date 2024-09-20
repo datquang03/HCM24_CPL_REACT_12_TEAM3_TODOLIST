@@ -9,7 +9,6 @@ interface CardProps {
 const Card = ({ task, setDraggedTask }: CardProps) => {
   const [showModal, setShowModal] = useState(false);
   const [editableTask, setEditableTask] = useState<ItemProps>(task);
-  const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
   const [isOverdue, setIsOverdue] = useState(false); // kiem tra thoi gian task
 
   // Open the modal and set the task as editableTask
@@ -26,14 +25,6 @@ const Card = ({ task, setDraggedTask }: CardProps) => {
   // Handle drag start
   const handleDragStart = () => {
     setDraggedTask(task); // Set the dragged task
-  };
-
-  // Handle input changes and update the task in state
-  const handleChange = (status: string) => {
-    setEditableTask((prev) => ({
-      ...prev,
-      status: status as "New" | "Inprogress" | "Complete",
-    }));
   };
 
   // Kiem tra task da qua han
