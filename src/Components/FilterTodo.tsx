@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import SearchInput from './SearchInput';
-import SelectTime from './SelectTime';
-import ItemProps from '../Model/ItemProps';
+import { useEffect, useState } from "react";
+import SearchInput from "./SearchInput";
+import SelectTime from "./SelectTime";
+import ItemProps from "../Model/ItemProps";
 
 const FilterTodo = () => {
   // States for Todo Name, Time, and Items
-  const [todoName, setTodoName] = useState('');
-  const [todoTime, setTodoTime] = useState<[string, string]>(['', '']);
+  const [todoName, setTodoName] = useState("");
+  const [todoTime, setTodoTime] = useState<[string, string]>(["", ""]);
   const [items, setItems] = useState<ItemProps[]>([]);
 
   // Load items from localStorage on mount
   useEffect(() => {
-    const currentList = localStorage.getItem('todo');
+    const currentList = localStorage.getItem("items");
     const items = currentList ? JSON.parse(currentList) : [];
     setItems(items);
   }, []);
@@ -21,27 +21,26 @@ const FilterTodo = () => {
     let filteredList = todoList;
 
     // Filter by name if provided
-    if (todoName.trim() !== '') {
-      filteredList = filteredList.filter(todo => 
-        todo.name.trim().toLowerCase() === todoName.trim().toLowerCase()
+    if (todoName.trim() !== "") {
+      filteredList = filteredList.filter(
+        (todo) =>
+          todo.name.trim().toLowerCase() === todoName.trim().toLowerCase()
       );
     }
 
     // Filter by time range if both start and end dates are provided
-    if (todoTime[0] !== '' && todoTime[1] !== '') {
-      filteredList = filteredList.filter(todo => {
+    if (todoTime[0] !== "" && todoTime[1] !== "") {
+      filteredList = filteredList.filter((todo) => {
         const [todoStartDate, todoEndDate] = todo.formToDate;
-        return (
-          todoStartDate >= todoTime[0] && todoEndDate <= todoTime[1]
-        );
+        return todoStartDate >= todoTime[0] && todoEndDate <= todoTime[1];
       });
     }
 
-    console.log('Filtered List:', filteredList);
+    console.log("Filtered List:", filteredList);
     return filteredList;
   };
 
-  console.log('Filtered List:', handleFilter(items));
+  console.log("Filtered List:", handleFilter(items));
 
   return (
     <div className="flex justify-end">
@@ -50,13 +49,17 @@ const FilterTodo = () => {
           <div className="flex gap-4 mb-4 items-end">
             {/* Todo Name */}
             <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Todo Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Todo Name
+              </label>
               <SearchInput value={todoName} setTodoName={setTodoName} />
             </div>
 
             {/* Time */}
             <div className="flex-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Time
+              </label>
               <SelectTime setTodoTime={setTodoTime} />
             </div>
 

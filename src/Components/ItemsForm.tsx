@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { Button, DatePicker, Form, FormProps, Input } from "antd";
+import { v4 as uuidv4 } from "uuid";
+
 import ItemProps from "../Model/ItemProps";
 
 interface ItemsFormProps {
   setIsOpen: (isOpen: boolean) => void;
+  onSubmitCallback: () => void;
 }
 
 const { RangePicker } = DatePicker;
@@ -18,7 +21,10 @@ const formItemLayout = {
   },
 };
 
-const ItemsForm: React.FC<ItemsFormProps> = ({ setIsOpen }) => {
+const ItemsForm: React.FC<ItemsFormProps> = ({
+  setIsOpen,
+  onSubmitCallback,
+}) => {
   const [componentVariant, setComponentVariant] =
     useState<FormProps["variant"]>("filled");
 
@@ -33,13 +39,16 @@ const ItemsForm: React.FC<ItemsFormProps> = ({ setIsOpen }) => {
   const handleSubmit: FormProps<ItemProps>["onFinish"] = (values) => {
     const currentList = localStorage.getItem("items");
     const items = currentList ? JSON.parse(currentList) : [];
+    values.id = uuidv4();
+    values.status = "New";
     items.push(values);
     localStorage.setItem("items", JSON.stringify(items));
     setIsOpen(false);
+    onSubmitCallback();
   };
 
   return (
-    <div >
+    <div>
       <h1 className="px-4 text-white font-semibold">Add New Task</h1>
       <Form
         {...formItemLayout}
@@ -52,8 +61,8 @@ const ItemsForm: React.FC<ItemsFormProps> = ({ setIsOpen }) => {
           label="Name"
           name="name"
           rules={[{ required: true, message: "Enter Task Name" }]}
-        > 
-          <Input className="bg-white"/>
+        >
+          <Input className="bg-white" />
         </Form.Item>
         <Form.Item<ItemProps>
           label="Description"
@@ -64,7 +73,7 @@ const ItemsForm: React.FC<ItemsFormProps> = ({ setIsOpen }) => {
             },
           ]}
         >
-          <Input.TextArea className="bg-white flex-grow"  />
+          <Input.TextArea className="bg-white flex-grow" />
         </Form.Item>
 
         <Form.Item<ItemProps>
@@ -75,7 +84,7 @@ const ItemsForm: React.FC<ItemsFormProps> = ({ setIsOpen }) => {
           <RangePicker />
         </Form.Item>
 
-        <Form.Item wrapperCol={{ offset: 6, span: 16}}>
+        <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
           <Button type="primary" htmlType="submit">
             Submit
           </Button>

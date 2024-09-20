@@ -1,7 +1,11 @@
 import { useState } from "react";
 import ItemsForm from "./ItemsForm";
 
-const AddTaskButton = () => {
+interface AddTaskButtonProps {
+  onSubmitCallback: () => void;
+}
+
+const AddTaskButton: React.FC<AddTaskButtonProps> = ({ onSubmitCallback }) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div>
@@ -20,7 +24,7 @@ const AddTaskButton = () => {
           </div>
         </div>
       ) : (
-        <ItemsForm setIsOpen = {setIsOpen}/>
+        <ItemsForm onSubmitCallback={onSubmitCallback} setIsOpen={setIsOpen} />
       )}
     </div>
   );
