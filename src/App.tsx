@@ -9,8 +9,9 @@ import Card from "./Components/Card";
 import ItemProps from "./Model/ItemProps";
 
 function App() {
-  localStorage.setItem("todo", JSON.stringify(dataForm));
+  localStorage.setItem("todo", JSON.stringify(dataForm)); // Store the initial tasks
   const [items, setItems] = useState<ItemProps[]>([]);
+  const [draggedTask, setDraggedTask] = useState<ItemProps | null>(null); // Track dragged task
 
   const updateItemsFromLocalStorage = () => {
     const currentList = localStorage.getItem("items");
@@ -22,10 +23,29 @@ function App() {
     updateItemsFromLocalStorage();
   }, []);
 
+  const handleTaskDrop = (newStatus: string) => {
+  if (!draggedTask) {
+    console.error("No task is being dragged.");
+    return;
+  }
+  // Prevent moving from "Inprogress" to "New"
+  if (draggedTask.status === "Inprogress" && newStatus === "New") {
+    alert("Tasks cannot move back from 'Inprogress' to 'New'.");
+    return;
+  }
+  const updatedItems = items.map((item) =>
+    item.id === draggedTask.id ? { ...item, status: newStatus } : item
+  );
+  console.log(updatedItems); // Log to check updated items
+  setItems(updatedItems);
+  localStorage.setItem("todo", JSON.stringify(updatedItems));
+  setDraggedTask(null); // Clear draggedTask after drop
+};
+
   // Filter tasks based on their status
-  const newTasks = (items ?? []).filter((item) => item.status === "New");
-  const inProgressTasks = (items ?? []).filter((item) => item.status === "Inprogress");
-  const completedTasks = (items ?? []).filter((item) => item.status === "Complete");
+  const newTasks = items.filter((item) => item.status === "New");
+  const inProgressTasks = items.filter((item) => item.status === "Inprogress");
+  const completedTasks = items.filter((item) => item.status === "Complete");
 
   return (
     <>
@@ -39,30 +59,32 @@ function App() {
           title="NEW TASK"
           color="bg-green-400"
           canAddTask={true}
+          onDrop={() => handleTaskDrop("New")}
         >
           {newTasks.map((task) => (
-            <Card
-              key={task.id}
-              task={task}
-            />
+            <Card key={task.id} task={task} setDraggedTask={setDraggedTask} />
           ))}
         </TaskBox>
+
         <TaskBox
           onSubmitCallback={updateItemsFromLocalStorage}
           title="IN PROGRESS TASK"
           color="bg-orange-400"
+          onDrop={() => handleTaskDrop("Inprogress")}
         >
           {inProgressTasks.map((task) => (
-            <Card key={task.id} task={task} />
+            <Card key={task.id} task={task} setDraggedTask={setDraggedTask} />
           ))}
         </TaskBox>
+
         <TaskBox
           onSubmitCallback={updateItemsFromLocalStorage}
           title="COMPLETE TASK"
           color="bg-red-400"
+          onDrop={() => handleTaskDrop("Complete")}
         >
           {completedTasks.map((task) => (
-            <Card key={task.id} task={task} />
+            <Card key={task.id} task={task} setDraggedTask={setDraggedTask} />
           ))}
         </TaskBox>
       </Content>
