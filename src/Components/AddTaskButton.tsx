@@ -7,7 +7,7 @@ const AddTaskButton = () => {
     <div>
       {!isOpen ? (
         <div
-          className="mx-4 flex gap-4 items-baseline cursor-pointer text-white group"
+          className="mx-4 p-2 flex gap-4 items-baseline cursor-pointer text-white group"
           onClick={() => {
             setIsOpen(true);
           }}
