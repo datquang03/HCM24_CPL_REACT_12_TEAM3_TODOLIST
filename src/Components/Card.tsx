@@ -50,7 +50,7 @@ const Card = ({ task }: CardProps) => {
             {/* The Card */}
             <div className="text-black">
                 <div
-                    className="cursor-pointer mx-4 mb-4 p-5 bg-white/30 backdrop-blur-md rounded-lg shadow-lg border-l-4"
+                    className="card cursor-pointer mx-4 mb-4 p-5 bg-white/30 backdrop-blur-md rounded-lg shadow-lg border-l-4"
                     onClick={openModal}
                 >
                     <h3 className="text-xl font-semibold text-gray-800 mb-2">{task.name}</h3>
@@ -60,6 +60,7 @@ const Card = ({ task }: CardProps) => {
                     </p>
                 </div>
             </div>
+
 
             {/* Modal */}
             {showModal && (
