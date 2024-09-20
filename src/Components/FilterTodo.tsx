@@ -5,8 +5,9 @@ import SelectTime from './SelectTime';
 
 
 const FilterTodo = () => {
+  //truyen prop tu app qua 
   const [todoName, setTodoName] = useState('');
-  const [todoTime, setTodoTime] = useState<[string,string]>(['','']);
+  const [todoTime, setTodoTime] = useState<[string,string]>(['', '']);
   const [items, setItems] = useState<Todo[]>([]);
   useEffect(() => {
     const currentList = localStorage.getItem("todo");
@@ -15,16 +16,24 @@ const FilterTodo = () => {
   }, []);
   //1.cho tham so la name status, list dc get tu localstorage 
   //2. handleFilter se return list moi co the get all nhu luc get tu storage
-  const handleFilter= (todoList:Todo[]) :Todo[]  =>  {
-    let filterList = todoList
-    filterList.filter((filter) => { 
-      if(filter.name === todoName) { } 
+  const handleFilter = (todoList: Todo[]): Todo[] => {
+    let filteredList = todoList;
 
+    if (todoName !== '') {
+      filteredList = filteredList.filter(todo => todo.name.trim() === todoName.trim());
+    }
 
-    })
-    console.log('added', todoName, todoTime, todoList);
-    return filterList
-  } 
+    if (todoTime[0] !== '' && todoTime[1] !== '') {
+      filteredList = filteredList.filter(todo => {
+        const todoDate = todo.formToDate; 
+        return todoDate >= todoTime[0] && todoDate <= todoTime[1];
+      });
+    }
+    console.log('Filtered List:', filteredList);
+    return filteredList;
+  };
+  console.log('Fil',handleFilter(items));
+  
   return (
     <div className='flex justify-end'>
     <div className="flex-1 p-6 bg-white shadow-md rounded-lg">
