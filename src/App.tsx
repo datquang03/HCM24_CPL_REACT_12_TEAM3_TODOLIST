@@ -85,7 +85,7 @@ function App() {
 
         <TaskBox
           onSubmitCallback={updateItemsFromLocalStorage}
-          title="IN PROGRESS TASK"
+          title="INPROGRESS TASK"
           color="bg-orange-400"
           onDrop={() => handleTaskDrop("Inprogress")}
         >

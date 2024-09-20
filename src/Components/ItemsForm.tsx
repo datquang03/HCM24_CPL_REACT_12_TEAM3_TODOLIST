@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, DatePicker, Form, FormProps, Input } from "antd";
+import { Button, DatePicker, Form, FormProps, Input, Modal } from "antd";
 import { v4 as uuidv4 } from "uuid";
 
 import ItemProps from "../Model/ItemProps";
@@ -37,6 +37,17 @@ const ItemsForm: React.FC<ItemsFormProps> = ({
   };
 
   const handleSubmit: FormProps<ItemProps>["onFinish"] = (values) => {
+    const currentDate = new Date();
+    const endDate = values.formToDate[1];
+
+    // Kiểm tra tạo một task với ngày kết thúc trong quá khứ
+    if (!endDate || new Date(endDate) < currentDate) {
+      Modal.error({
+        title: "Error",
+        content: "End date cannot be in the past or not chosen!", // Thông báo lỗi
+      });
+      return; // Ngăn việc submit form
+    }
     const currentList = localStorage.getItem("items");
     const items = currentList ? JSON.parse(currentList) : [];
     values.id = uuidv4();
