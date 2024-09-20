@@ -23,7 +23,7 @@ function App() {
     updateItemsFromLocalStorage();
   }, []);
 
-  const handleTaskDrop = (newStatus: string) => {
+  const handleTaskDrop = (newStatus: "New" | "Inprogress" | "Complete") => {
   if (!draggedTask) {
     console.error("No task is being dragged.");
     return;
@@ -38,14 +38,14 @@ function App() {
   );
   console.log(updatedItems); // Log to check updated items
   setItems(updatedItems);
-  localStorage.setItem("todo", JSON.stringify(updatedItems));
+  localStorage.setItem("items", JSON.stringify(updatedItems));
   setDraggedTask(null); // Clear draggedTask after drop
 };
 
   // Filter tasks based on their status
-  const newTasks = items.filter((item) => item.status === "New");
-  const inProgressTasks = items.filter((item) => item.status === "Inprogress");
-  const completedTasks = items.filter((item) => item.status === "Complete");
+  const newTasks = (items ?? []).filter((item) => item.status === "New");
+  const inProgressTasks = (items ?? []).filter((item) => item.status === "Inprogress");
+  const completedTasks = (items ?? []).filter((item) => item.status === "Complete");
 
   return (
     <>
