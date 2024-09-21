@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import ItemProps from "../Model/ItemProps";
 import TaskDropDown from "./TaskDropdown";
-import { message } from "antd";
+import { DatePicker, message } from "antd";
+import dayjs, { Dayjs } from 'dayjs';
+import DateRange from "./DateRange";
+
 
 interface CardProps {
   task: ItemProps; // Accept a single task
@@ -18,6 +21,16 @@ const Card = ({ task, setDraggedTask, handleDeleteTask, handleUpdateTask }: Card
   const handleEditTask = (id: string) => {
     message.success(`Edit task with id: ${id}`);
   };
+
+  const handleDateChange = (startDate: Dayjs | null, endDate: Dayjs | null) => {
+    // Update the editable task's date range when it changes
+    setEditableTask({
+      ...editableTask,
+      formToDate: [startDate?.toISOString() ?? editableTask.formToDate[0], endDate?.toISOString() ?? editableTask.formToDate[1]],
+    });
+  };
+
+  
 
   // Open the modal and set the task as editableTask
   const openModal = () => {
@@ -88,14 +101,16 @@ const Card = ({ task, setDraggedTask, handleDeleteTask, handleUpdateTask }: Card
                     {task.name}
                     </h3>
 
-                    {/* Overdue label */}
-                    {isOverdue && (
-                    <p className="text-red-500 text-sm font-bold bg-red-100 rounded-full px-2 py-1 shadow-md">
-                        Overdue
-                    </p>
-                    )}
-                    <div>
-                        <TaskDropDown onDelete={handleDeleteTask} onEdit={handleEditTask} taskId={task.id}/>
+                    <div className="flex items-center">
+                      {/* Overdue label */}
+                      {isOverdue && (
+                      <p className="text-red-500 text-sm font-bold bg-red-100 rounded-full px-2 py-1 shadow-md">
+                          Overdue
+                      </p>
+                      )}
+                      <div>
+                          <TaskDropDown onDelete={handleDeleteTask} onEdit={handleEditTask} taskId={task.id}/>
+                      </div>
                     </div>
                 </div>
 
@@ -112,39 +127,10 @@ const Card = ({ task, setDraggedTask, handleDeleteTask, handleUpdateTask }: Card
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
           <div className="bg-black/30 backdrop-blur-md rounded-lg p-6 w-96 shadow-lg">
-            <h2 className="text-2xl font-semibold mb-4">
-              <label className="text-lg text-white">
-                Task
-                <input
-                  title="Task Name"
-                  placeholder=""
-                  type="text"
-                  name="name"
-                  defaultValue={editableTask.name}
-                  className="text-black w-full p-2 rounded"
-                  onChange={(e) =>
-                    setEditableTask({ ...editableTask, name: e.target.value })
-                  }
-                />
-              </label>
-            </h2>
-            <label className="text-white">
-              Description
-              <textarea
-                title="Task Description"
-                placeholder=""
-                name="description"
-                defaultValue={editableTask.description}
-                className="w-full border border-gray-300 text-black rounded p-2"
-                onChange={(e) =>
-                  setEditableTask({ ...editableTask, description: e.target.value })
-                }              />
-            </label>
-
-            {/* Status Dropdown */}
-            <div className="relative py-2 text-white font-semibold">
-              Status
-              <span className="mx-2 w-full rounded-lg text-left">
+            {/* Status */}
+            <div className="relative py-2 text-white font-semibold flex justify-center w-full space-x-2">
+              
+              <span className="rounded-lg">
                 <span
                   className={`px-2 py-1 rounded-full ${getStatusColor(
                     editableTask.status
@@ -162,24 +148,52 @@ const Card = ({ task, setDraggedTask, handleDeleteTask, handleUpdateTask }: Card
               </span>
             </div>
 
-            <p className="mt-2 text-white">
-              <span className="font-medium text-white flex">
-                <span className="w-12">From:</span> {formatDate(editableTask.formToDate[0])}{" "}
-              </span>
-              <span className="font-medium text-white flex">
-                <span className="w-12">To:</span> {formatDate(editableTask.formToDate[1])}
-              </span>
-            </p>
+            <h2 className="text-2xl font-semibold mb-4 mt-4">       
+              <div className="relative">
+                <span className="absolute left-2 top-1/2 transform -translate-y-1/2 pointer-events-none text-xs text-orange-500">
+                  To-do
+                </span>
+                <input
+                  title="Task Name"
+                  placeholder=""
+                  type="text"
+                  name="name"
+                  defaultValue={editableTask.name}
+                  className="text-black w-full p-2 rounded pl-12" // Add left padding for space
+                  onChange={(e) =>
+                    setEditableTask({ ...editableTask, name: e.target.value })
+                  }
+                />
+              </div>    
+            </h2>
+            <label className="text-white font-medium text-sm">
+              Description
+              <textarea
+                title="Task Description"
+                placeholder=""
+                name="description"
+                defaultValue={editableTask.description}
+                className="w-full border border-gray-300 text-black rounded p-2"
+                onChange={(e) =>
+                  setEditableTask({ ...editableTask, description: e.target.value })
+                }              />
+            </label>
+
+            
+
+            <div className="mt-2 text-white space-y-4">
+              <DateRange onDateChange={handleDateChange} dateData={editableTask.formToDate} />
+            </div>
 
             {/* Close button */}
             <button
-              className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
               onClick={closeModal}
             >
               Close
             </button>
               <button
-                className="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-blue-600 ml-4"
+                className="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 ml-4 transition"
                 onClick={() => {
                   closeModal();
                   handleUpdateTask(editableTask)
