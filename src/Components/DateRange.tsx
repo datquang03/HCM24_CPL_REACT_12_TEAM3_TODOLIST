@@ -7,7 +7,6 @@ interface DateRangeProps {
   onDateChange: (startDate: Dayjs | null, endDate: Dayjs | null) => void;
   dateData: [string, string]; // Start and end date strings
 }
-//commment
 
 const DateRange: React.FC<DateRangeProps> = ({ onDateChange, dateData }) => {
   const [startValue, setStartValue] = useState<Dayjs | null>(dayjs(dateData[0]));
