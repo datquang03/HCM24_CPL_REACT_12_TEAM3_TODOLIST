@@ -7,7 +7,6 @@ import { dataForm } from "./data/todoTest";
 import FilterTodo from "./Components/FilterTodo";
 import Card from "./Components/Card";
 import ItemProps from "./Model/ItemProps";
-import { updateTodo } from "./utils/updateToDo";
 
 function App() {
   localStorage.setItem("todo", JSON.stringify(dataForm)); // Store the initial tasks
@@ -19,19 +18,6 @@ function App() {
     const items = currentList ? JSON.parse(currentList) : [];
     setItems(items);
   };
-
-  //handle delete task
-  const handleDeleteTask = (taskId: string) => {
-    const updatedItems = items.filter((item) => item.id !== taskId);
-    setItems(updatedItems);
-    localStorage.setItem("items", JSON.stringify(updatedItems));
-  }
-
-  //handle update task
-  const handleUpdateTask = (updatedItem: ItemProps) => {
-    updateTodo(updatedItem, items);
-    updateItemsFromLocalStorage();
-  }
 
   useEffect(() => {
     updateItemsFromLocalStorage();
@@ -76,7 +62,7 @@ function App() {
           onDrop={() => handleTaskDrop("New")}
         >
           {newTasks.map((task) => (
-            <Card key={task.id} task={task} setDraggedTask={setDraggedTask} handleDeleteTask={handleDeleteTask} />
+            <Card key={task.id} task={task} setDraggedTask={setDraggedTask} />
           ))}
         </TaskBox>
 
@@ -87,7 +73,7 @@ function App() {
           onDrop={() => handleTaskDrop("Inprogress")}
         >
           {inProgressTasks.map((task) => (
-            <Card key={task.id} task={task} setDraggedTask={setDraggedTask} handleDeleteTask={handleDeleteTask} handleUpdateTask={handleUpdateTask} />
+            <Card key={task.id} task={task} setDraggedTask={setDraggedTask} />
           ))}
         </TaskBox>
 
@@ -98,7 +84,7 @@ function App() {
           onDrop={() => handleTaskDrop("Complete")}
         >
           {completedTasks.map((task) => (
-            <Card key={task.id} task={task} setDraggedTask={setDraggedTask} handleDeleteTask={handleDeleteTask} handleUpdateTask={handleUpdateTask}/>
+            <Card key={task.id} task={task} setDraggedTask={setDraggedTask} />
           ))}
         </TaskBox>
       </Content>
