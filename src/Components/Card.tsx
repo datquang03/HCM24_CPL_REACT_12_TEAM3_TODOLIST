@@ -1,15 +1,23 @@
 import { useEffect, useState } from "react";
 import ItemProps from "../Model/ItemProps";
+import TaskDropDown from "./TaskDropdown";
+import { message } from "antd";
 
 interface CardProps {
   task: ItemProps; // Accept a single task
   setDraggedTask: (task: ItemProps | null) => void; // Callback for setting dragged task
+  handleDeleteTask: (id: string) => void;
+  handleUpdateTask: (updatedTask: ItemProps) => void;
 }
 
-const Card = ({ task, setDraggedTask }: CardProps) => {
+const Card = ({ task, setDraggedTask, handleDeleteTask, handleUpdateTask }: CardProps) => {
   const [showModal, setShowModal] = useState(false);
   const [editableTask, setEditableTask] = useState<ItemProps>(task);
   const [isOverdue, setIsOverdue] = useState(false); // kiem tra thoi gian task
+
+  const handleEditTask = (id: string) => {
+    message.success(`Edit task with id: ${id}`);
+  };
 
   // Open the modal and set the task as editableTask
   const openModal = () => {
@@ -70,32 +78,35 @@ const Card = ({ task, setDraggedTask }: CardProps) => {
           draggable={true} // Make the card draggable
           onDragStart={handleDragStart} // Handle drag start
         >
-          <div className="flex justify-between items-center">
-            {/* Task name with conditional strike-through if overdue */}
-            <h3
-              className={`text-xl font-semibold mb-2 ${
-                isOverdue ? "text-red-500 line-through italic" : "text-gray-800"
-              }`}
-            >
-              {task.name}
-            </h3>
+                <div className="flex justify-between items-center">
+                    {/* Task name with conditional strike-through if overdue */}
+                    <h3
+                    className={`text-xl font-semibold mb-2 ${
+                        isOverdue ? "text-red-500 line-through italic" : "text-gray-800"
+                    }`}
+                    >
+                    {task.name}
+                    </h3>
 
-            {/* Overdue label */}
-            {isOverdue && (
-              <p className="text-red-500 text-sm font-bold bg-red-100 rounded-full px-2 py-1 shadow-md">
-                Overdue
-              </p>
-            )}
-          </div>
+                    {/* Overdue label */}
+                    {isOverdue && (
+                    <p className="text-red-500 text-sm font-bold bg-red-100 rounded-full px-2 py-1 shadow-md">
+                        Overdue
+                    </p>
+                    )}
+                    <div>
+                        <TaskDropDown onDelete={handleDeleteTask} onEdit={handleEditTask} taskId={task.id}/>
+                    </div>
+                </div>
 
-          <p className="text-black-500 text-sm">
-            <span className="font-medium mr-1">From:</span>
-            {formatDate(task.formToDate[0])}
-            <span className="ml-2 font-medium mr-1">To:</span>
-            {formatDate(task.formToDate[1])}
-          </p>
+                <p className="text-black-500 text-sm">
+                    <span className="font-medium mr-1">From:</span>
+                    {formatDate(task.formToDate[0])}
+                    <span className="ml-2 font-medium mr-1">To:</span>
+                    {formatDate(task.formToDate[1])}
+                </p>
+            </div>
         </div>
-      </div>
 
       {/* Modal */}
       {showModal && (
@@ -109,8 +120,11 @@ const Card = ({ task, setDraggedTask }: CardProps) => {
                   placeholder=""
                   type="text"
                   name="name"
-                  value={editableTask.name}
+                  defaultValue={editableTask.name}
                   className="text-black w-full p-2 rounded"
+                  onChange={(e) =>
+                    setEditableTask({ ...editableTask, name: e.target.value })
+                  }
                 />
               </label>
             </h2>
@@ -120,9 +134,11 @@ const Card = ({ task, setDraggedTask }: CardProps) => {
                 title="Task Description"
                 placeholder=""
                 name="description"
-                value={editableTask.description}
+                defaultValue={editableTask.description}
                 className="w-full border border-gray-300 text-black rounded p-2"
-              />
+                onChange={(e) =>
+                  setEditableTask({ ...editableTask, description: e.target.value })
+                }              />
             </label>
 
             {/* Status Dropdown */}
@@ -162,6 +178,15 @@ const Card = ({ task, setDraggedTask }: CardProps) => {
             >
               Close
             </button>
+              <button
+                className="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-blue-600 ml-4"
+                onClick={() => {
+                  closeModal();
+                  handleUpdateTask(editableTask)
+                }}
+              >
+                Apply
+              </button>
           </div>
         </div>
       )}
