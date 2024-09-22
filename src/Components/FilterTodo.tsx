@@ -1,47 +1,16 @@
-import { useEffect, useState } from "react";
 import SearchInput from "./SearchInput";
 import SelectTime from "./SelectTime";
-import ItemProps from "../Model/ItemProps";
 
-const FilterTodo = () => {
-  // States for Todo Name, Time, and Items
-  const [todoName, setTodoName] = useState("");
-  const [todoTime, setTodoTime] = useState<[string, string]>(["", ""]);
-  const [items, setItems] = useState<ItemProps[]>([]);
 
-  // Load items from localStorage on mount
-  useEffect(() => {
-    const currentList = localStorage.getItem("items");
-    const items = currentList ? JSON.parse(currentList) : [];
-    setItems(items);
-  }, []);
 
-  // Filter function
-  const handleFilter = (todoList: ItemProps[]): ItemProps[] => {
-    let filteredList = todoList;
+type FilterProps = {
+  todoName: string
+  setTodoName :(name: string) => void
+  setTodoTime :(dateStrings: [string, string]) => void;
+  onFilter: () => void;
+}
 
-    // Filter by name if provided
-    if (todoName.trim() !== "") {
-      filteredList = filteredList.filter(
-        (todo) =>
-          todo.name.trim().toLowerCase() === todoName.trim().toLowerCase()
-      );
-    }
-
-    // Filter by time range if both start and end dates are provided
-    if (todoTime[0] !== "" && todoTime[1] !== "") {
-      filteredList = filteredList.filter((todo) => {
-        const [todoStartDate, todoEndDate] = todo.formToDate;
-        return todoStartDate >= todoTime[0] && todoEndDate <= todoTime[1];
-      });
-    }
-
-    console.log("Filtered List:", filteredList);
-    return filteredList;
-  };
-
-  console.log("Filtered List:", handleFilter(items));
-
+const FilterTodo = ({todoName,setTodoName,setTodoTime,onFilter}:FilterProps) => {
   return (
     <div className="flex justify-end">
       <div className="flex-1 p-6 bg-white shadow-md rounded-lg">
@@ -54,7 +23,6 @@ const FilterTodo = () => {
               </label>
               <SearchInput value={todoName} setTodoName={setTodoName} />
             </div>
-
             {/* Time */}
             <div className="flex-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -62,12 +30,11 @@ const FilterTodo = () => {
               </label>
               <SelectTime setTodoTime={setTodoTime} />
             </div>
-
             {/* Filters Button */}
             <div className="flex items-center">
               <button
                 className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                onClick={() => handleFilter(items)}
+                onClick={onFilter}
               >
                 Filters
               </button>
