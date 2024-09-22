@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ItemProps from "../Model/ItemProps";
 import TaskDropDown from "./TaskDropdown";
-import {  message } from "antd";
+import {  message, Form, Input, Button } from "antd";
 import { Dayjs } from 'dayjs';
 import DateRange from "./DateRange";
 
@@ -10,13 +10,15 @@ interface CardProps {
   task: ItemProps; // Accept a single task
   setDraggedTask: (task: ItemProps | null) => void; // Callback for setting dragged task
   handleDeleteTask: (id: string) => void;
-  handleUpdateTask: (updatedTask: ItemProps) => void;
+  handleUpdateTask: (updatedItem: ItemProps) => void;
 }
 
 const Card = ({ task, setDraggedTask, handleDeleteTask, handleUpdateTask }: CardProps) => {
   const [showModal, setShowModal] = useState(false);
   const [editableTask, setEditableTask] = useState<ItemProps>(task);
   const [isOverdue, setIsOverdue] = useState(false); // kiem tra thoi gian task
+  const [form] = Form.useForm(); // Antd form instance
+
 
   const handleEditTask = (id: string) => {
     message.success(`Edit task with id: ${id}`);
@@ -30,11 +32,24 @@ const Card = ({ task, setDraggedTask, handleDeleteTask, handleUpdateTask }: Card
     });
   };
 
+  const onFinish = (values: ItemProps) => {
+    const updatedTask = { ...editableTask, ...values };
+    handleUpdateTask(updatedTask); // Pass updated task to parent component
+    message.success(`Task updated!`);
+    setShowModal(false); // Close modal after submission
+  };
+
   
 
   // Open the modal and set the task as editableTask
   const openModal = () => {
     setEditableTask(task);
+    form.setFieldsValue({
+      name: task.name,
+      description: task.description,
+      formToDate: [new Date(task.formToDate[0]), new Date(task.formToDate[1])],
+      status: task.status,
+    });
     setShowModal(true);
   };
 
@@ -147,60 +162,60 @@ const Card = ({ task, setDraggedTask, handleDeleteTask, handleUpdateTask }: Card
                 )}
               </span>
             </div>
-
-            <h2 className="text-2xl font-semibold mb-4 mt-4">       
-              <div className="relative">
-                <span className="absolute left-2 top-1/2 transform -translate-y-1/2 pointer-events-none text-xs text-orange-500">
-                  To-do
-                </span>
-                <input
-                  title="Task Name"
-                  placeholder=""
-                  type="text"
+            <Form
+              onFinish={onFinish}
+              initialValues={editableTask}
+              form={form}
+            >
+            <div className="relative mb-4 mt-4">
+              <Form.Item
+                  label=""
                   name="name"
-                  defaultValue={editableTask.name}
-                  className="text-black w-full p-2 rounded pl-12" // Add left padding for space
-                  onChange={(e) =>
-                    setEditableTask({ ...editableTask, name: e.target.value })
-                  }
+                  rules={[{ required: true, message: "Enter Task Name" }]}
+                >
+                <Input
+                  className="text-black w-full p-2 text-xl rounded pl-12 font-semibold" // Add left padding for space
                 />
-              </div>    
-            </h2>
-            <label className="text-white font-medium text-sm">
-              Description
-              <textarea
+              </Form.Item>
+              <span className="absolute top-4 left-2 text-xs text-orange-500">
+                    To-do
+              </span>
+            </div>
+
+            <span className="text-white font-medium text-sm">Description</span>
+            <Form.Item
+              name="description"
+              label=""
+              rules={[{message: "Enter Task Description" }]}
+            >
+              
+              <Input.TextArea
                 title="Task Description"
-                placeholder=""
-                name="description"
-                defaultValue={editableTask.description}
                 className="w-full border border-gray-300 text-black rounded p-2"
-                onChange={(e) =>
-                  setEditableTask({ ...editableTask, description: e.target.value })
-                }              />
-            </label>
+              />
+            </Form.Item>      
 
-            
-
-            <div className="mt-2 text-white space-y-4">
+            <div className="text-white space-y-4">
               <DateRange onDateChange={handleDateChange} dateData={editableTask.formToDate} />
             </div>
 
             {/* Close button */}
-            <button
+            <Form.Item>
+
+            <Button
               className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
               onClick={closeModal}
             >
               Close
-            </button>
-              <button
+            </Button>
+              <Button
                 className="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 ml-4 transition"
-                onClick={() => {
-                  closeModal();
-                  handleUpdateTask(editableTask)
-                }}
+                htmlType="submit"
               >
                 Apply
-              </button>
+              </Button>
+              </Form.Item>
+            </Form>
           </div>
         </div>
       )}
