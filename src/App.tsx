@@ -84,7 +84,7 @@ const onFilter = () => {
 
   return (
     <>
-      <Header className="h-[100px] flex justify-center items-center text-white font-bold text-6xl">
+      <Header className="w-full h-[100px] flex justify-center items-center text-white font-bold text-6xl">
         TO DO LIST
       </Header>
       <FilterTodo todoName={todoName}  setTodoName={setTodoName} setTodoTime={setTodoTime} onFilter={onFilter}/>

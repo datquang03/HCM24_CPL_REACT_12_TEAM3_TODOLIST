@@ -11,7 +11,7 @@ const AddTaskButton: React.FC<AddTaskButtonProps> = ({ onSubmitCallback }) => {
     <div>
       {!isOpen ? (
         <div
-          className="mx-4 p-2 flex gap-2 items-baseline cursor-pointer text-white group"
+          className="absolute top-5 right-5 mx-4 p-2 flex gap-2 items-baseline cursor-pointer text-white group"
           onClick={() => {
             setIsOpen(true);
           }}

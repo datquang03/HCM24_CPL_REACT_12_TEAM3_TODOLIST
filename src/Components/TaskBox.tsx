@@ -28,7 +28,7 @@ const TaskBox: React.FC<TaskBoxProps> = ({
       onDragOver={handleDragOver}
       onDrop={onDrop} // Handle drop event
     >
-      <div className="flex items-baseline justify-between">
+      <div className="relative items-baseline justify-between">
         <div className="text-white text-4xl font-black italic p-4">{title}</div>
         {canAddTask && <AddTaskButton onSubmitCallback={onSubmitCallback} />}
       </div>
